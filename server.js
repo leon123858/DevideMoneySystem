@@ -85,6 +85,59 @@ function isasktoken(obj, code, output, res) {
         });
     });
 }
+function insertrecord(obj, parameter, output, res) {
+    MongoClient.connect(uri, function (err, db) {
+        if (err) throw err;
+        var table = db.db("devidemoney").collection("record");
+        var objIn = { token: parameter[0], gender: parameter[1], name: parameter[2], price: parameter[3], thing: parameter[4], type: parameter[5]};
+        table.insertOne(objIn, function (err, res) { // insertMany 是插入多個用的
+            if (err) throw err;
+            console.log("insert success");
+            db.close();
+        });
+        output(obj, "success", res);
+    });
+}
+function findrecord(parameter, res) {
+    MongoClient.connect(uri, function (err, db) {
+        if (err) throw err;
+        var table = db.db("devidemoney").collection("record");
+        var findThing = { token: parameter[0] };
+        table.find(findThing, { projection: { _id: 0, token: 1, gender: 1,name:1,price:1,thing:1,type:1 } }).toArray(function (err, result) {
+            if (err) throw err;
+            var relist = [];
+            if (result != null) {
+                for (var i = 0; i < result.length; i++)
+                    relist[i] = result[i];
+            }
+            console.log(relist);
+            //console.log(relist[1].value); //直接呼叫特定回傳值
+            var json = JSON.stringify(relist);
+            res.end(json);
+            db.close();
+        });
+    });
+}
+function deleteall(obj,parameter, res) {
+    MongoClient.connect(uri, { useNewUrlParser: true }, function (err, db) {
+        if (err) throw err;
+        console.log("It's delete start");
+        var table1 = db.db("devidemoney").collection("token");
+        var table2 = db.db("devidemoney").collection("record");
+        var whereStr = { token: parameter[0] };
+        table1.deleteMany(whereStr, function (err, res) { // insertMany 是插入多個用的
+            if (err) throw err;
+            console.log("It's delete 1 end");
+        });
+        table2.deleteMany(whereStr, function (err, res) { // insertMany 是插入多個用的
+            if (err) throw err;
+            console.log("It's delete 2 end");
+        });
+        obj.token = "DeleteSuccess";
+        var json = JSON.stringify(obj);
+        res.end(json);
+    });
+}
 http.createServer(function (req, res) {
     res.writeHeader(200, {
         'Content-Type': 'text/html;charset=utf-8'
@@ -119,50 +172,23 @@ http.createServer(function (req, res) {
         else
             outputToken(obj, "NoParameter", res);
     }
-    else if (pathname == '/edit') {
-        MongoClient.connect(uri, { useNewUrlParser: true }, function (err, db) {
-            if (err) throw err;
-            console.log("It's edit start");
-            var table = db.db("testdb").collection("a");
-            var whereStr = { "name": 'baby' };  // 查询条件
-            var updateStr = { $set: { "value": "CCCCCUUUUUTTTTTEEEEE" } };
-            table.updateMany(whereStr, updateStr, function (err, res) {
-                if (err) throw err;
-                console.log(res.result.nModified + " line been set");
-            });
-            console.log("It's edit end");
-            db.close();
-        });
-        obj.say = '編輯成功';
-        var json = JSON.stringify(obj);
-        res.end(json);
+    else if (pathname == '/insert') {
+        if (parameter.length > 5)
+            insertrecord(obj, parameter, outputToken, res);
+        else
+            outputToken(obj, "NoParameter", res);
     }
     else if (pathname == '/find') {
-        if (parameter.length > 0) {
-            MongoClient.connect(uri, function (err, db) {
-                if (err) throw err;
-                var table = db.db("testdb").collection("a");
-                var findThing = { name: parameter[0] };
-                table.find(findThing, { projection: { _id: 0, name: 1, value: 1 } }).toArray(function (err, result) {
-                    if (err) throw err;
-                    var relist = [];
-                    if (result != null) {
-                        for (var i = 0; i < result.length; i++)
-                            relist[i] = result[i];
-                    }
-                    console.log(relist);
-                    //console.log(relist[1].value); //直接呼叫特定回傳值
-                    var json = JSON.stringify(relist);
-                    res.end(json);
-                    db.close();
-                });
-            });
-        }
-        else {
-            obj.say = '沒填參數';
-            var json = JSON.stringify(obj);
-            res.end(json);
-        }
+        if (parameter.length > 0)
+            findrecord(parameter, res);
+        else
+            outputToken(obj, "NoParameter", res);
+    }
+    else if (pathname == '/delete') {
+        if (parameter.length > 0)
+            deleteall(obj, parameter, res);
+        else
+            outputToken(obj, "NoParameter", res);
     }
 }).listen(process.env.PORT || 8080, () => {
     console.log('started web process');
