@@ -1,0 +1,25 @@
+{
+  "name": "devidemoneysystem",
+  "version": "1.0.0",
+  "description": "a web and server that can help people devide money",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --exit test/*.test.js",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leon123858/DevideMoneySystem.git"
+  },
+  "author": "LeonLin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leon123858/DevideMoneySystem/issues"
+  },
+  "homepage": "https://github.com/leon123858/DevideMoneySystem#readme",
+  "dependencies": {
+    "jquery": "^3.5.1",
+    "mongodb": "^3.5.9",
+    "nconf": "^0.10.0"
+  }
+}
