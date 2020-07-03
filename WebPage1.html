@@ -32,7 +32,7 @@
 $(function(){
     function testtoken(code){
         $.ajax({
-　　　　　　'url':'http://localhost:8080/'+'asktoken?token='+ code,
+　　　　　　'url':'http://server-282202.appspot.com/'+'asktoken?token='+ code,
 　　　　　　'method':'GET',
 　　　　　　'data':{},
 　　　　　　'success':function(data){
@@ -40,7 +40,7 @@ $(function(){
              console.log(json.token);
              if(json.token == "true"){
                  $.cookie('last_time',code, { expires: 7, path: '/'});
-                 $(location).attr('href', '//127.0.0.1:1269/WebPage2.html?token=' + code);
+                 $(location).attr('href', 'https://tomatoclock.000webhostapp.com/WebPage2.html?token=' + code);
              }
              else{
                  $("#show_error").html("跳轉目標房不存在, 請建立新專案");
@@ -50,7 +50,7 @@ $(function(){
     }
     function gettoken(){
         $.ajax({
-　　　　　　'url':'http://localhost:8080/'+'newtoken',
+　　　　　　'url':'http://server-282202.appspot.com/'+'newtoken',
 　　　　　　'method':'GET',
 　　　　　　'data':{},
 　　　　　　'success':function(data){
@@ -58,7 +58,7 @@ $(function(){
              console.log(json.token);
              $.cookie('last_time',json.token, { expires: 7, path: '/'});
           //http://127.0.0.1:1269/WebPage1.html
-             $(location).attr('href', '//127.0.0.1:1269/WebPage2.html?token=' + json.token);
+             $(location).attr('href', 'https://tomatoclock.000webhostapp.com/WebPage2.html?token=' + json.token);
 　　　　　　}
 　　　　  });
     }

@@ -71,7 +71,7 @@ $(function(){
     var name = $.cookie('name');
     function mode1(){
         $.ajax({
-　　　　　　'url':'http://localhost:8080/'+'find?token='+ now_token,
+　　　　　　'url':'http://server-282202.appspot.com/'+'find?token='+ now_token,
 　　　　　　'method':'GET',
 　　　　　　'data':{},
 　　　　　　'success':function(data){
@@ -104,7 +104,7 @@ $(function(){
     function freshroom(){
         //$("#now").append("fdsadfsa");
         $.ajax({
-　　　　　　'url':'http://localhost:8080/'+'find?token='+ now_token,
+　　　　　　'url':'http://server-282202.appspot.com/'+'find?token='+ now_token,
 　　　　　　'method':'GET',
 　　　　　　'data':{},
 　　　　　　'success':function(data){
@@ -137,7 +137,7 @@ $(function(){
     }
     function insert(){
         $.ajax({
-　　　　　　'url':'http://localhost:8080/'+'insert?token='+ now_token + '&gender=' + gender + '&name=' + name+ '&price=' + $("#price").val()+ '&thing=' + $("#thing").val()+ '&type=' + $("#type").val(),
+　　　　　　'url':'http://server-282202.appspot.com/'+'insert?token='+ now_token + '&gender=' + gender + '&name=' + name+ '&price=' + $("#price").val()+ '&thing=' + $("#thing").val()+ '&type=' + $("#type").val(),
 　　　　　　'method':'GET',
 　　　　　　'data':{},
 　　　　　　'success':function(data){
@@ -155,7 +155,7 @@ $(function(){
     }
     console.log(now_token);
     if(now_token == null){
-        $(location).attr('href', '//127.0.0.1:1269/WebPage1.html');
+        $(location).attr('href', 'https://tomatoclock.000webhostapp.com/WebPage1.html');
     }
     //original
     freshroom();
