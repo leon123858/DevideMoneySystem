@@ -4,7 +4,9 @@
 <meta charset="utf-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HomePage</title>
+<script src="jquery.js" ></script>
+<script src="jquery.cookie.js" ></script>
+<title>UsePage</title>
 <style type="text/css">
     @media(min-width: 300px){
         
@@ -38,7 +40,7 @@
 <hr>
 <span>個人資料</span>
 <p>
-<input id = "duplicate_room" type="button" value="男">&#160&#160&#160&#160&#160&#160&#160<input id = "duplicate_room" type="button" value="女"></p>
+<input id = "male" type="button" value="男">&#160&#160&#160&#160&#160&#160&#160<input id = "female" type="button" value="女"></p>
 <p>
 <span>name:<input id = "name" type="text"></span></p>
 <p>
@@ -57,9 +59,136 @@
 <hr>
 <p>caculation</p>
 <p>sol:</p>
-<input id = "duplicate_room" type="button" value="平分"><input id = "duplicate_room" type="button" value="人家4女生啦"><input id = "duplicate_room" type="button" value="我土豪我出錢"><input id = "duplicate_room" type="button" value="賭起來">
+<input id = "mode1" type="button" value="平分"><input id = "mode2" type="button" value="人家4女生啦"><input id = "mode3" type="button" value="我土豪我出錢"><input id = "mode4" type="button" value="賭起來">
 <P>
 <textarea cols="50" rows="5" id = "sol">分錢結果
 </textarea>
+<script>
+$(function(){
+    var url = new URL(location.href);
+    var now_token = url.searchParams.get('token');
+    var gender = $.cookie('gender');
+    var name = $.cookie('name');
+    function mode1(){
+        $.ajax({
+　　　　　　'url':'http://localhost:8080/'+'find?token='+ now_token,
+　　　　　　'method':'GET',
+　　　　　　'data':{},
+　　　　　　'success':function(data){
+             var str = "";
+             var total = 0;
+             var i = 0;
+             var name_list = [];
+             var json = JSON.parse(data);
+             for(var k in json) {
+                 total += parseInt(json[k].price);
+                 if(!samename(name_list,json[k].name)){
+                     name_list[i] = json[k].name;
+                     ++i;
+                 }
+             }
+             for(var k in name_list){
+                 str += ("name:  " + name_list[k] + "    pay:  " + Math.round(total/name_list.length) + " $") + '\n';
+             }
+            $("#sol").val(str);
+　　　　　　}
+　　　　  });
+    }
+    function samename(list,name){
+        for(var k in list) {
+            if(list[k] == name)
+                return true;
+        }
+        return false;
+    }
+    function freshroom(){
+        //$("#now").append("fdsadfsa");
+        $.ajax({
+　　　　　　'url':'http://localhost:8080/'+'find?token='+ now_token,
+　　　　　　'method':'GET',
+　　　　　　'data':{},
+　　　　　　'success':function(data){
+             var total = 0;
+             var str = "";
+             var json = JSON.parse(data);
+             console.log(json);
+             for(var k in json) {
+                str += ("name:  " + json[k].name + "    buy:  " + json[k].thing+ "    cost:  " +json[k].price) + '\n';
+                 total += parseInt(json[k].price);
+             }
+             $("#now").val(str);
+             $("#total_money").html(total);
+　　　　　　}
+　　　　  });
+    }
+    function Copy(str) {
+        var clip_area = document.createElement('textarea');
+        clip_area.textContent = str;
+        document.body.appendChild(clip_area);
+        clip_area.select();
+        document.execCommand('copy');
+        clip_area.remove();
+    }
+    function beforeinsert(){
+        name = $("#name").val()
+        $.cookie('gender',gender, { expires: 7, path: '/'});
+        $.cookie('name',name, { expires: 7, path: '/'});
+        insert();
+    }
+    function insert(){
+        $.ajax({
+　　　　　　'url':'http://localhost:8080/'+'insert?token='+ now_token + '&gender=' + gender + '&name=' + name+ '&price=' + $("#price").val()+ '&thing=' + $("#thing").val()+ '&type=' + $("#type").val(),
+　　　　　　'method':'GET',
+　　　　　　'data':{},
+　　　　　　'success':function(data){
+             var json = JSON.parse(data);
+             console.log(json);
+　　　　　　}
+　　　　  });
+    }
+    $("#name").val(name);
+    if(gender == 1){
+        
+    }
+    else{
+        
+    }
+    console.log(now_token);
+    if(now_token == null){
+        $(location).attr('href', '//127.0.0.1:1269/WebPage1.html');
+    }
+    //original
+    freshroom();
+    $("#room_number").html(now_token);
+    $("#room_number2").html(now_token);
+    //定期更新
+    setInterval(freshroom,10000);
+    
+    //trigger
+    $('#duplicate_room').click(function() {;
+        Copy(String(now_token));              
+    });
+    $('#shareFB').click(function() {;
+        console.log("還沒做");             
+    });
+    $('#duplicate_url').click(function() {;
+        Copy(String(location.href));              
+    });
+    //寄出個人資料
+    $('#male').click(function() {;
+        gender = 1; 
+    });
+    $('#female').click(function() {;
+        gender = 0;          
+    });
+    $('#send').click(function() {;
+        beforeinsert();
+    });
+    //caculation
+    $('#mode1').click(function() {;
+        mode1();
+    });
+});
+</script>
 </body>
 </html>

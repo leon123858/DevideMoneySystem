@@ -18,6 +18,7 @@ MongoClient.connect(uri, { useNewUrlParser: true }, function (err, db) {
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
+
 function ishavetoken(obj, code, find, insert, output, res) {
     MongoClient.connect(uri, function (err, db) {
         if (err) throw err;
@@ -139,6 +140,7 @@ function deleteall(obj,parameter, res) {
     });
 }
 http.createServer(function (req, res) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.writeHeader(200, {
         'Content-Type': 'text/html;charset=utf-8'
     });

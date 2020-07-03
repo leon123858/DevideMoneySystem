@@ -4,6 +4,8 @@
 <meta charset="utf-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="jquery.js" ></script>
+<script src="jquery.cookie.js" ></script>
 <title>HomePage</title>
 <style type="text/css">
     @media(min-width: 300px){
@@ -23,8 +25,52 @@
 <p>
 <span>跳轉至<input id = "goal" type="text" placeholder="請寫入目標房間號">號分頁</span><input id = "jumproom" type="button" value="click">
 <p>
-<span id = "show_error">跳轉目標房不存在, 請建立新專案</span>
+<span id = "show_error"></span>
 <p>
 <span>你上次進入的活動是<span id = "last_time">XXXX</span></span>
+<script>
+$(function(){
+    function testtoken(code){
+        $.ajax({
+　　　　　　'url':'http://localhost:8080/'+'asktoken?token='+ code,
+　　　　　　'method':'GET',
+　　　　　　'data':{},
+　　　　　　'success':function(data){
+             var json = JSON.parse(data);
+             console.log(json.token);
+             if(json.token == "true"){
+                 $.cookie('last_time',code, { expires: 7, path: '/'});
+                 $(location).attr('href', '//127.0.0.1:1269/WebPage2.html?token=' + code);
+             }
+             else{
+                 $("#show_error").html("跳轉目標房不存在, 請建立新專案");
+             }
+　　　　　　}
+　　　　  });
+    }
+    function gettoken(){
+        $.ajax({
+　　　　　　'url':'http://localhost:8080/'+'newtoken',
+　　　　　　'method':'GET',
+　　　　　　'data':{},
+　　　　　　'success':function(data){
+             var json = JSON.parse(data);
+             console.log(json.token);
+             $.cookie('last_time',json.token, { expires: 7, path: '/'});
+          //http://127.0.0.1:1269/WebPage1.html
+             $(location).attr('href', '//127.0.0.1:1269/WebPage2.html?token=' + json.token);
+　　　　　　}
+　　　　  });
+    }
+    var last_time = $.cookie("last_time");
+	document.getElementById("last_time").innerHTML = last_time;
+    $('#buildroom').click(function() {;
+        gettoken();
+    });
+    $('#jumproom').click(function() {
+        testtoken($("#goal").val());
+    });
+});
+</script>
 </body>
 </html>
