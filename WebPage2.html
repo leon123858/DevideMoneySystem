@@ -26,8 +26,8 @@
     <span>share code:<span id = "room_number2">XXXX</span><input id = "duplicate_room" type="button" value="複製房號"></span>
 </p>
 <p>
-<input id = "shareFB" type="button" value="share on messager">
-    </p>
+<!--<input id = "shareFB" type="button" value="share on messager">!-->
+</p>
 <p>
 <input id = "duplicate_url" type="button" value="複製網址">
 </p>
@@ -47,7 +47,7 @@
 <p>
 <span>thing:<input id = "thing" type="text"></span></p>
 <p>
-<span>price:<input id = "price" type="text"></span></p>
+<span>price:<input id = "price" type="text" onkeyup="value=value.replace(/[^\d]/g,'') "></span></p>
 <p>
 <select id = "type">
 　<option value="Taipei">食物</option>
@@ -60,7 +60,7 @@
 <hr>
 <p>caculation</p>
 <p>sol:</p>
-<input id = "mode1" type="button" value="平分"><input id = "mode2" type="button" value="人家4女生啦"><input id = "mode3" type="button" value="我土豪我出錢"><input id = "mode4" type="button" value="賭起來">
+<input id = "mode1" type="button" value="平分"><!--<input id = "mode2" type="button" value="人家4女生啦"><input id = "mode3" type="button" value="我土豪我出錢"><input id = "mode4" type="button" value="賭起來">!-->
 <P>
 <textarea cols="50" rows="5" id = "sol">分錢結果
 </textarea>
@@ -89,7 +89,7 @@ $(function(){
                  }
              }
              for(var k in name_list){
-                 str += ("name:  " + name_list[k] + "    pay:  " + Math.round(total/name_list.length) + " $") + '\n';
+                 str += ("name:  " + decodeURI(name_list[k]) + "    pay:  " + Math.round(total/name_list.length) + " $") + '\n';
              }
             $("#sol").val(str);
 　　　　　　}
@@ -114,7 +114,7 @@ $(function(){
              var json = JSON.parse(data);
              console.log(json);
              for(var k in json) {
-                str += ("name:  " + json[k].name + "    buy:  " + json[k].thing+ "    cost:  " +json[k].price) + '\n';
+                str += ("name:  " + decodeURI(json[k].name) + "    buy:  " + decodeURI(json[k].thing)+ "    cost:  " +json[k].price) + '\n';
                  total += parseInt(json[k].price);
              }
              $("#now").val(str);
@@ -138,7 +138,7 @@ $(function(){
     }
     function insert(){
         $.ajax({
-　　　　　　'url':'//server-282202.appspot.com/'+'insert?token='+ now_token + '&gender=' + gender + '&name=' + name+ '&price=' + $("#price").val()+ '&thing=' + $("#thing").val()+ '&type=' + $("#type").val(),
+　　　　　　'url':'//server-282202.appspot.com/'+'insert?token='+ now_token + '&gender=' + gender + '&name=' + encodeURI(name)+ '&price=' + $("#price").val()+ '&thing=' + encodeURI($("#thing").val())+ '&type=' + encodeURI($("#type").val()),
 　　　　　　'method':'GET',
 　　　　　　'data':{},
 　　　　　　'success':function(data){
@@ -167,27 +167,33 @@ $(function(){
     
     //trigger
     $('#duplicate_room').click(function() {;
-        Copy(String(now_token));              
+        Copy(String(now_token));
+        alert("複製成功");
     });
     $('#shareFB').click(function() {;
         console.log("還沒做");             
     });
     $('#duplicate_url').click(function() {;
-        Copy(String(location.href));              
+        Copy(String(location.href));
+        alert("複製成功");
     });
     //寄出個人資料
     $('#male').click(function() {;
-        gender = 1; 
+        gender = 1;
+        alert("你男的");
     });
     $('#female').click(function() {;
-        gender = 0;          
+        gender = 0;
+        alert("妳妹子");                           
     });
     $('#send').click(function() {;
         beforeinsert();
+        alert("寄出成功,數秒後更新");
     });
     //caculation
     $('#mode1').click(function() {;
         mode1();
+        alert("計算中");
     });
 });
 </script>
